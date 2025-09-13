@@ -2,24 +2,23 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
-  - name: 'gcr.io/cloud-builders/gcloud'
-    entrypoint: 'bash'
-    id: 'Generate settings.xml'
-    args:
-      - '-c'
-      - |
-        ACCESS_TOKEN=$(gcloud auth print-access-token)
-        cat > settings.xml <<EOF
-        <settings>
-          <servers>
-            <server>
-              <id>google-artifact-registry</id>
-              <username>oauth2accesstoken</username>
-              <password>$ACCESS_TOKEN</password>
-            </server>
-          </servers>
-        </settings>
-        EOF
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - |
+      TOKEN=$(gcloud auth print-access-token)
+      cat <<EOF > settings.xml
+<settings>
+  <servers>
+    <server>
+      <id>google-artifact-registry</id>
+      <username>oauth2accesstoken</username>
+      <password>${TOKEN}</password>
+    </server>
+  </servers>
+</settings>
+EOF
 
   - name: 'gcr.io/cloud-builders/mvn'
     id: 'Build with Maven using settings.xml'
