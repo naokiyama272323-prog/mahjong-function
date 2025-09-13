@@ -49,7 +49,7 @@
   <dependency>
     <groupId>com.google.cloud</groupId>
     <artifactId>google-cloud-vision</artifactId>
-    <version>3.20.0</version>
+    <version>1.24.0</version>
   </dependency>
   <!-- Vertex AI -->
   <dependency>
