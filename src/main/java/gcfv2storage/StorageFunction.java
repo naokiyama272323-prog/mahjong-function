@@ -12,6 +12,8 @@ import com.google.protobuf.ByteString;
 import com.google.cloud.aiplatform.v1.*;
 import com.google.protobuf.Value;
 import com.google.protobuf.Struct;
+import com.google.protobuf.util.JsonFormat;
+import com.google.protobuf.ListValue;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -61,7 +63,7 @@ public class StorageFunction implements CloudEventsFunction {
     try (ImageAnnotatorClient visionClient = ImageAnnotatorClient.create()) {
       ByteString byteString = ByteString.copyFrom(imageBytes);
       Image image = Image.newBuilder().setContent(byteString).build();
-      Feature feature = Feature.newBuilder().setType(Feature.Type.TEXT_DETECTION).build();
+      com.google.cloud.vision.v1.Feature feature = com.google.cloud.vision.v1.Feature.newBuilder().setType(com.google.cloud.vision.v1.Feature.Type.TEXT_DETECTION).build();
       AnnotateImageRequest request = AnnotateImageRequest.newBuilder()
         .addFeatures(feature)
         .setImage(image)
@@ -79,14 +81,21 @@ public class StorageFunction implements CloudEventsFunction {
     try (PredictionServiceClient client = PredictionServiceClient.create()) {
       EndpointName endpoint = EndpointName.of("your-project-id", "asia-northeast1", "your-endpoint-id");
 
-      Struct payload = Struct.newBuilder()
-        .putFields("tiles", Value.newBuilder().setStringValue(String.join(" ", tiles)).build())
-        .build();
+     // tiles情報をStructに格納
+Struct structPayload = Struct.newBuilder()
+  .putFields("tiles", Value.newBuilder().setStringValue(String.join(" ", tiles)).build())
+  .build();
 
-      PredictRequest predictRequest = PredictRequest.newBuilder()
-        .setEndpoint(endpoint.toString())
-        .setParameters(payload)
-        .build();
+// StructをValueにラップ
+Value payload = Value.newBuilder()
+  .setStructValue(structPayload)
+  .build();
+
+// PredictRequestに渡す
+PredictRequest predictRequest = PredictRequest.newBuilder()
+  .setEndpoint(endpoint.toString())
+  .setParameters(payload) // ✅ Value型に変更
+  .build();
 
       PredictResponse response = client.predict(predictRequest);
       return response.getPredictions(0).getStructValue().getFieldsOrThrow("suggestion").getStringValue();
