@@ -4,21 +4,7 @@ options:
 steps:
 - name: 'gcr.io/cloud-builders/gcloud'
   entrypoint: 'bash'
-  args:
-    - '-c'
-    - |
-      TOKEN=$(gcloud auth print-access-token)
-      cat <<EOF > settings.xml
-<settings>
-  <servers>
-    <server>
-      <id>google-artifact-registry</id>
-      <username>oauth2accesstoken</username>
-      <password>${TOKEN}</password>
-    </server>
-  </servers>
-</settings>
-EOF
+  args: ['generate-settings.sh']
 
   - name: 'gcr.io/cloud-builders/mvn'
     id: 'Build with Maven using settings.xml'
