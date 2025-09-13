@@ -4,6 +4,7 @@ options:
 steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
+    id: 'Generate settings.xml'
     args:
       - '-c'
       - |
@@ -14,7 +15,7 @@ steps:
             <server>
               <id>google-artifact-registry</id>
               <username>oauth2accesstoken</username>
-              <password>${ACCESS_TOKEN}</password>
+              <password>$ACCESS_TOKEN</password>
             </server>
           </servers>
         </settings>
