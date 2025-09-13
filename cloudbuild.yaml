@@ -1,0 +1,16 @@
+steps:
+  - name: 'gcr.io/cloud-builders/mvn'
+    args: ['clean', 'package', '-DskipTests']
+    id: 'Build with Maven'
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args: [
+      'functions', 'deploy', 'storage-function',
+      '--gen2',
+      '--runtime=java17',
+      '--entry-point=gcfv2storage.StorageFunction',
+      '--source=.',
+      '--trigger-http',
+      '--region=asia-northeast1'
+    ]
