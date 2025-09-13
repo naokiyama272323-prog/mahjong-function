@@ -6,18 +6,18 @@ steps:
   entrypoint: 'bash'
   args: ['generate-settings.sh']
 
-  - name: 'gcr.io/cloud-builders/mvn'
-    id: 'Build with Maven using settings.xml'
-    args: ['-s', 'settings.xml', 'clean', 'package', '-DskipTests']
+- name: 'gcr.io/cloud-builders/mvn'
+  id: 'Build with Maven using settings.xml'
+  args: ['-s', 'settings.xml', 'clean', 'package', '-DskipTests']
 
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: 'gcloud'
-    args: [
-      'functions', 'deploy', 'storage-function',
-      '--gen2',
-      '--runtime=java17',
-      '--entry-point=gcfv2storage.StorageFunction',
-      '--source=.',
-      '--trigger-http',
-      '--region=asia-northeast1'
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'gcloud'
+  args: [
+    'functions', 'deploy', 'storage-function',
+    '--gen2',
+    '--runtime=java17',
+    '--entry-point=gcfv2storage.StorageFunction',
+    '--source=.',
+    '--trigger-http',
+    '--region=asia-northeast1'
     ]
