@@ -16,6 +16,7 @@ steps:
       '--source=.',
       '--trigger-http',
       '--region=asia-northeast1'
+      ]
       
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: 'bash'
@@ -26,4 +27,3 @@ steps:
         echo "<settings>...</settings>" > settings.xml # settings.xml に埋め込む
   - name: 'gcr.io/cloud-builders/mvn'
     args: ['-s', 'settings.xml', 'clean', 'package', '-DskipTests']
-    ]
