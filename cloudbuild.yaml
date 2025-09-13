@@ -1,11 +1,30 @@
 options:
   logging: CLOUD_LOGGING_ONLY
-  
+
 steps:
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Generate settings.xml'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        ACCESS_TOKEN=$(gcloud auth print-access-token)
+        cat > settings.xml <<EOF
+        <settings>
+          <servers>
+            <server>
+              <id>google-artifact-registry</id>
+              <username>oauth2accesstoken</username>
+              <password>${ACCESS_TOKEN}</password>
+            </server>
+          </servers>
+        </settings>
+        EOF
+
   - name: 'gcr.io/cloud-builders/mvn'
-    args: ['clean', 'package', '-DskipTests']
-    id: 'Build with Maven'
-    
+    id: 'Build with Maven using settings.xml'
+    args: ['-s', 'settings.xml', 'clean', 'package', '-DskipTests']
+
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
     args: [
@@ -16,14 +35,4 @@ steps:
       '--source=.',
       '--trigger-http',
       '--region=asia-northeast1'
-      ]
-      
-  - name: 'gcr.io/cloud-builders/gcloud'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        gcloud auth print-access-token > access.token
-        echo "<settings>...</settings>" > settings.xml # settings.xml に埋め込む
-  - name: 'gcr.io/cloud-builders/mvn'
-    args: ['-s', 'settings.xml', 'clean', 'package', '-DskipTests']
+    ]
