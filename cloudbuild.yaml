@@ -3,7 +3,6 @@ options:
 
 steps:
   - name: 'gcr.io/cloud-builders/gcloud'
-    id: 'Generate settings.xml'
     entrypoint: 'bash'
     args:
       - '-c'
