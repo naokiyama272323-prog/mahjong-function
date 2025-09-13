@@ -17,6 +17,10 @@
     <id>google-cloud-java</id>
     <url>https://maven.google.com</url>
   </repository>
+  <repository>
+    <id>google-artifact-registry</id>
+    <url>https://asia-northeast1-maven.pkg.dev/google-cloud-aiplatform/java-artifacts</url>
+  </repository>
 </repositories>
   
  <dependencies>
