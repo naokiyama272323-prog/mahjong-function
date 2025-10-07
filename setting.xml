@@ -5,7 +5,7 @@
     <server>
       <id>google-artifact-registry</id>
       <username>oauth2accesstoken</username>
-      <password>${env.GCP_ACCESS_TOKEN}</password>
+      <password>unused</password>
     </server>
   </servers>
 </settings>
